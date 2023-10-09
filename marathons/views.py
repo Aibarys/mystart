@@ -3,15 +3,23 @@ from django.contrib.auth.decorators import login_required
 from .models import Marathon, Participant, MarathonDistance
 from .forms import MarathonDistanceForm, MarathonForm, Marathon
 from django.http import JsonResponse
-from django.core.paginator import Paginator
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 
 def marathon_list(request):
-    marathon_list = Marathon.objects.all()
+    marathon_list = Marathon.published.all()
     marathonDistance = MarathonDistance.objects.all()
     paginator = Paginator(marathon_list, 6) 
     page_number = request.GET.get('page', 1)
-    marathons = paginator.page(page_number)
+    
+    try:
+        marathons = paginator.page(page_number)
+    except PageNotAnInteger:
+        # If page_number is not an integer deliver the first page
+        marathons = paginator.page(1)
+    except EmptyPage:
+        # If page_number is out of range deliver last page of results
+        marathons = paginator.page(paginator.num_pages)
     return render(request, 'marathons/marathon_list.html', {'marathons': marathons, 'marathonDistance': marathonDistance})
 
 def create_distance(request):
@@ -56,7 +64,7 @@ def create_marathon(request):
             marathon.author = request.user
             marathon.save()
             # Дополнительные действия, если необходимо
-            return redirect('marathon_detail', marathon_id=marathon.id)
+            return redirect('marathons:marathon_list')
     else:
         form = MarathonForm()
     return render(request, 'marathons/create_marathon.html', {'form': form})

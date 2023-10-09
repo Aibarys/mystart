@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% load static %}
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<!-- Подключение jQuery UI и активация Datepicker -->
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+
+<!-- Подключение виджета календаря -->
+{{ form.media }}
+{% block title %}Создать марафон{% endblock %}
+{% block content %}
+  <h2>Создать новый марафон</h2>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <table>
+            <tr>
+                <th><label for="{{ form.title.id_for_label }}">Название:</label></th>
+                <td>{{ form.title }}</td>
+            </tr>
+            <tr>
+                <th><label for="{{ form.description.id_for_label }}">Описание:</label></th>
+                <td>{{ form.description }}</td>
+            </tr>
+            <tr>
+                <th>{{ form.distances.label_tag }}</th>
+                <td>
+                    {% for checkbox in form.distances %}
+                        <label for="{{ checkbox.id_for_label }}">
+                            {{ checkbox }}
+                        </label><br>
+                    {% endfor %}
+                </td>
+            </tr>
+            <tr>
+                <th>{{ form.prices.label_tag }}</th>
+                <td>
+                    {% for checkbox in form.prices %}
+                        <label for="{{ checkbox.id_for_label }}">
+                            {{ checkbox }}
+                        </label><br>
+                    {% endfor %}
+                </td>
+            </tr>
+            <tr>
+                <th><label for="{{ form.start_location.id_for_label }}">Место старта:</label></th>
+                <td>{{ form.start_location }}</td>
+            </tr>
+            <tr>
+                <th><label for="{{ form.date_and_time.id_for_label }}">Дата и время старта:</label></th>
+                <td><input type="datetime-local" id="{{ form.date_and_time.id_for_label }}" name="{{ form.date_and_time.name }}" value="{{ form.date_and_time.value|default:'' }}"></td>
+            </tr>
+            <tr>
+                <th><label for="{{ form.max_participants.id_for_label }}">Количество слотов:</label></th>
+                <td>{{ form.max_participants }}</td>
+            </tr>
+            <tr>
+                <th><label for="{{ form.file_attachment.id_for_label }}">Файл:</label></th>
+                <td>{{ form.file_attachment }}</td>
+            </tr>
+            <tr>
+                <th><label for="{{ form.poster.id_for_label }}">Постер:</label></th>
+                <td>{{ form.poster }}</td>
+            </tr>
+        </table>
+        <button type="submit" class="btn btn-primary">Создать</button>
+    </form>
+
+    {% if form.errors %}
+        <ul class="errorlist">
+            {% for field, errors in form.errors.items %}
+                <li>{{ field }}: {{ errors.0 }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    <script>
+        jQuery(document).ready(function () {
+            jQuery('.datepicker').datepicker();
+        });
+    </script>
+{% endblock %}
