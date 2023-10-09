@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h2>Профиль пользователя {{ request.user.first_name|default:request.user.username }}</h2>
+  <p><strong>Имя:</strong> {{ user_profile.first_name }} {{ user_profile.last_name }}</p>
+  <p><strong>Email:</strong> {{ user_profile.email }}</p>
+  <p><strong>Пол:</strong> {{ user_profile.gender }}</p>
+  <p><strong>Номер телефона:</strong> {{ user_profile.phone_number }}</p>
+  <p><strong>Город:</strong> {{ user_profile.city }}</p>
+  <p><strong>Размер футболки:</strong> {{ user_profile.shirt_size }}</p>
+  <p><strong>Социальные сети:</strong> {{ user_profile.social_media }}</p>
+  <p><strong>Сфера деятельности:</strong> {{ user_profile.occupation }}</p>
+  <p><strong>Беговой клуб:</strong> {{ user_profile.running_club }}</p>
+  <!-- Другие поля профиля -->
+{% endblock %}
+

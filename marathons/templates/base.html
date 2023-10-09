@@ -1,0 +1,305 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{% block title %}{% endblock %}</title>
+    {{ form.media }}
+    <link href="{% static 'css/marathons.css' %}" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>mystart.kz</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <link href="https://fonts.googleapis.com/css?family=Inter:100,100i,200,200i,300,400,500,600,700,800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+</head>
+<body>
+    <header>
+        <div class="navigation d-flex flex-wrap align-items-center justify-content-between">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-sm-2 col-lg-3 col-xl-4 col-xxl-5">
+                        <div class="logo">mystart.kz</div>
+                    </div>
+                    <div class="col-sm-8 col-lg-7 col-xl-6 col-xxl-6">
+                        <div class="menu">
+                            <ul class="nav justify-content-end">
+                                <a href="{% url 'marathons:marathon_list' %}"><li>События</li></a>
+                                <a href="#"><li>Результаты</li></a>
+                                {% if request.user.is_authenticated %}
+                                <a href="{% url 'users:profile' %}"><li>Профиль</li></a>
+                                {% endif %}
+                                <a href="#"><li>Контакты</li></a>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-sm-2 col-lg-2 col-xl-2 col-xxl-1">
+                        <div class="nav button-log-in justify-content-end">
+                            <span class="user">
+                                {% if request.user.is_authenticated %}
+                                  Привет {{ request.user.first_name|default:request.user.username }},
+                                  <a href="{% url 'users:logout' %}">Выйти</a>
+                                {% else %}
+                                    {% if request.path != '/users/register/' %}
+                                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-box-arrow-in-right" viewBox="0 0 18 18">
+                                        <path fill-rule="evenodd" d="M6 3.5a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-2a.5.5 0 0 0-1 0v2A1.5 1.5 0 0 0 6.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 14.5 2h-8A1.5 1.5 0 0 0 5 3.5v2a.5.5 0 0 0 1 0v-2z"/>
+                                        <path fill-rule="evenodd" d="M11.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5H1.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3z"/>
+                                    </svg> Вход</button>
+                                    {% endif %}
+                                  <!-- Модальное окно -->
+                                <div class="log-in">
+                                    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                <h5 class="modal-title" id="exampleModalLabel">Выполните вход</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+                                                </div>
+                                                <div class="modal-body pb-1">
+                                                    <form id="loginForm" method="post", action="/users/login/">
+                                                        {% csrf_token %}
+                                                        <input type="username" name="username" placeholder="Username" required><br>
+                                                        <input type="password" name="password" placeholder="Введите ваш пароль" required><br>
+                                                        <hr>
+                                                        <div class="container-modal">
+                                                            <div class="footer-modal justify-content-center">
+                                                                <div class="row">
+                                                                    <div class="col-6">
+                                                                        <button type="submit" class="btn btn-primary">Войти</button>
+                                                                    </div>
+                                                                    <div class="col-6">
+                                                                        <a href="{% url 'users:register' %}" class="btn btn-primary">Регистрация</a>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                                
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <script>
+                                    document.addEventListener('DOMContentLoaded', function () {
+                                        const loginForm = document.getElementById('loginForm');
+                                
+                                        loginForm.addEventListener('submit', async (e) => {
+                                            e.preventDefault();
+                                
+                                            const formData = new FormData(loginForm);
+                                            const response = await fetch('/users/login/', {
+                                                method: 'POST',
+                                                body: formData,
+                                            });
+                                
+                                            if (response.ok) {
+                                                // Вход выполнен успешно, обновите страницу или выполните дополнительные действия
+                                                window.location.reload();
+                                            } else {
+                                                // Вход не выполнен, вы можете отобразить сообщение об ошибке
+                                            }
+                                        });
+                                    });
+                                </script>
+                                {% endif %}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    
+    <div class="content">
+        <div class="block-1"> 
+            {% if request.path == '/marathons/' %}
+            <!------Блок событий и поисковика-------->
+            <div class="container">
+                <h1>События</h1>
+                <div class="row">
+                    <div class="col-9">
+                        <div class="date-events d-flex flex-wrap align-items-center">
+                            <ul class="nav justify-content-start">
+                                <a class="active" href="#"><li>Будущие</li></a>
+                                <a href="#"><li>Прошедшие</li></a>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-3">
+                        <div class="sidebar d-flex flex-wrap align-items-center">
+                            <div class="search">
+                                <div class="row justify-content-between">
+                                    <div class="col-10">
+                                        <input type="search" placeholder="Введите ваш запрос..."></input>
+                                    </div>
+                                    <div class="col-2 text-align">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                                            <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+                                        </svg>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div> 
+        <!------Конец блока событий и поисковика---------->
+        <div class="block-2"> 
+            <!------Блок марафонов и фильтра---------->
+            <div class="container">
+                <div class="row">
+                    <div class="col-9">
+                        <div class="marathons">
+                            <div class="row"> 
+                                {% block content %}
+                                {% endblock %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-3">
+                        {% if request.path == '/marathons/' %}
+                        <div class="filter">
+                            <form method="get">
+                                <div class="filter-date">
+                                    <h3>Дата проведения</h3>
+                                    <input type="date" name="date" value="{{ request.GET.date }}">
+                                </div>
+                                <div class="filter-city">
+                                    <h3>Выберите город</h3>
+                                    <select name="city">
+                                        <option value="">Все города</option>
+                                        <option value="Астана" {% if request.GET.city == "Астана" %}selected{% endif %}>Астана</option>
+                                        <option value="Алматы" {% if request.GET.city == "Алматы" %}selected{% endif %}>Алматы</option>
+                                        <option value="Шымкент" {% if request.GET.city == "Шымкент" %}selected{% endif %}>Шымкент</option>
+                                        <option value="Актобе" {% if request.GET.city == "Актобе" %}selected{% endif %}>Актобе</option>
+                                        <option value="Актау" {% if request.GET.city == "Актау" %}selected{% endif %}>Актау</option>
+                                    </select>
+                                </div>
+                                <div class="filter-age">
+                                    <h3>Возраст</h3>
+                                    <input type="range" name="age" min="0" max="80" value="{{ request.GET.age }}">
+                                </div>
+                                <div class="filter-distance">
+                                    <h3>Дистанция</h3>
+                                    <select name="distance">
+                                        <option value="">Все дистанции</option>
+                                        <option value="5 км" {% if request.GET.distance == "5 км" %}selected{% endif %}>5 км</option>
+                                        <option value="10 км" {% if request.GET.distance == "10 км" %}selected{% endif %}>10 км</option>
+                                        <option value="21 км" {% if request.GET.distance == "21 км" %}selected{% endif %}>21 км</option>
+                                        <option value="42 км" {% if request.GET.distance == "42 км" %}selected{% endif %}>42 км</option>
+                                    </select>
+                                </div>
+                                <div class="row justify-content-between">
+                                    <div class="col-6">
+                                        <div class="filter-reset">
+                                            <button class="btn btn-primary" type="reset">Сбросить</button>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="filter-search">
+                                            <button class="btn btn-primary" type="submit">Показать</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div> 
+        <!------ Конец блока марафонов и фильтра------->
+    </div>
+    
+    
+    <footer>
+        <div class="container">
+            <div class="row mb-5">
+                <div class="col-3">
+                    <div class="logo">mystart.kz</div>
+                </div>
+                <div class="col-3">
+                    <div class="footer-menu">
+                        <h3>Организатору</h3>
+                        <ul class="list-group">
+                            <a href="#"><li>Создать событие</li></a>
+                            <a href="#"><li>Возможности</li></a>
+                            <a href="#"><li>Услуги</li></a>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-3">
+                    <div class="footer-menu">
+                        <h3>Участнику</h3>
+                        <ul class="list-group">
+                            <a href="#"><li>Найти событие</li></a>
+                            <a href="#"><li>Результаты</li></a>
+                            <a href="#"><li>Фото</li></a>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-3">
+                    <div class="footer-menu">
+                        <h3>Организатору</h3>
+                        <ul class="list-group">
+                            <a href="#"><li>Центр поддержки</li></a>
+                            <a href="#"><li>Ошибки на сайте</li></a>
+                            <a href="#"><li>Оценить сайт</li></a>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <hr>
+            <div class="political-social">
+                <div class="row justify-content-between">
+                    <div class="col-8">
+                        <div class="political">
+                            <ul class="nav justify-content-left">
+                                <a href="#"><li>Конфиденциальность</li></a>
+                                <a href="#"><li>Политика проведения платежей</li></a>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-2">
+                        <div class="social">
+                            <ul class="nav justify-content-right">
+                                <a href="#"><li><svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-instagram" viewBox="0 0 16 16">
+                                    <path d="M8 0C5.829 0 5.556.01 4.703.048 3.85.088 3.269.222 2.76.42a3.917 3.917 0 0 0-1.417.923A3.927 3.927 0 0 0 .42 2.76C.222 3.268.087 3.85.048 4.7.01 5.555 0 5.827 0 8.001c0 2.172.01 2.444.048 3.297.04.852.174 1.433.372 1.942.205.526.478.972.923 1.417.444.445.89.719 1.416.923.51.198 1.09.333 1.942.372C5.555 15.99 5.827 16 8 16s2.444-.01 3.298-.048c.851-.04 1.434-.174 1.943-.372a3.916 3.916 0 0 0 1.416-.923c.445-.445.718-.891.923-1.417.197-.509.332-1.09.372-1.942C15.99 10.445 16 10.173 16 8s-.01-2.445-.048-3.299c-.04-.851-.175-1.433-.372-1.941a3.926 3.926 0 0 0-.923-1.417A3.911 3.911 0 0 0 13.24.42c-.51-.198-1.092-.333-1.943-.372C10.443.01 10.172 0 7.998 0h.003zm-.717 1.442h.718c2.136 0 2.389.007 3.232.046.78.035 1.204.166 1.486.275.373.145.64.319.92.599.28.28.453.546.598.92.11.281.24.705.275 1.485.039.843.047 1.096.047 3.231s-.008 2.389-.047 3.232c-.035.78-.166 1.203-.275 1.485a2.47 2.47 0 0 1-.599.919c-.28.28-.546.453-.92.598-.28.11-.704.24-1.485.276-.843.038-1.096.047-3.232.047s-2.39-.009-3.233-.047c-.78-.036-1.203-.166-1.485-.276a2.478 2.478 0 0 1-.92-.598 2.48 2.48 0 0 1-.6-.92c-.109-.281-.24-.705-.275-1.485-.038-.843-.046-1.096-.046-3.233 0-2.136.008-2.388.046-3.231.036-.78.166-1.204.276-1.486.145-.373.319-.64.599-.92.28-.28.546-.453.92-.598.282-.11.705-.24 1.485-.276.738-.034 1.024-.044 2.515-.045v.002zm4.988 1.328a.96.96 0 1 0 0 1.92.96.96 0 0 0 0-1.92zm-4.27 1.122a4.109 4.109 0 1 0 0 8.217 4.109 4.109 0 0 0 0-8.217zm0 1.441a2.667 2.667 0 1 1 0 5.334 2.667 2.667 0 0 1 0-5.334z"/>
+                                  </svg></li></a>
+                                <a href="#"><li><svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-telegram" viewBox="0 0 16 16">
+                                    <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8.287 5.906c-.778.324-2.334.994-4.666 2.01-.378.15-.577.298-.595.442-.03.243.275.339.69.47l.175.055c.408.133.958.288 1.243.294.26.006.549-.1.868-.32 2.179-1.471 3.304-2.214 3.374-2.23.05-.012.12-.026.166.016.047.041.042.12.037.141-.03.129-1.227 1.241-1.846 1.817-.193.18-.33.307-.358.336a8.154 8.154 0 0 1-.188.186c-.38.366-.664.64.015 1.088.327.216.589.393.85.571.284.194.568.387.936.629.093.06.183.125.27.187.331.236.63.448.997.414.214-.02.435-.22.547-.82.265-1.417.786-4.486.906-5.751a1.426 1.426 0 0 0-.013-.315.337.337 0 0 0-.114-.217.526.526 0 0 0-.31-.093c-.3.005-.763.166-2.984 1.09z"/>
+                                  </svg></li></a>
+                                <a href="#"><li><svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-facebook" viewBox="0 0 16 16">
+                                    <path d="M16 8.049c0-4.446-3.582-8.05-8-8.05C3.58 0-.002 3.603-.002 8.05c0 4.017 2.926 7.347 6.75 7.951v-5.625h-2.03V8.05H6.75V6.275c0-2.017 1.195-3.131 3.022-3.131.876 0 1.791.157 1.791.157v1.98h-1.009c-.993 0-1.303.621-1.303 1.258v1.51h2.218l-.354 2.326H9.25V16c3.824-.604 6.75-3.934 6.75-7.951z"/>
+                                  </svg></li></a>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr>
+            <div class="copyright-web">
+                <div class="row justify-content-between">
+                    <div class="col-4">
+                        <div class="copyright">
+                            <p>© 2023, TOO «MYSTART.KZ»</p>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="web">
+                            <p>Разработано веб-студией: <a href="https://adway.kz">Adway.kz</a></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
+</body>
+</html>

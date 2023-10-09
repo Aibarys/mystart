@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}{{ marathon.title }}{% endblock %}
+{% block content %}
+    <h1>{{ marathon.title }}</h1>
+    <p class="date">
+        Published {{ marathon.publish }} by {{ marathon.author }}
+    </p>
+    <img src="{{ marathon.poster.url }}" alt="Афиша события">
+    <p>Доступные дистанции:</p>
+        <ul class="nav justify-content-center">
+            {% for elem in marathonDistance %}
+                <a href="#"><li>{{ elem.distance }}</li></a>
+            {% endfor %}
+            <hr>
+            {% for elem in marathonDistance %}
+                <a href="#"><li>{{ elem.price }}тг</li></a>
+            {% endfor %}      
+        </ul>
+    <p>Место старта: {{ marathon.start_location|truncatewords:30|linebreaks }}</p> 
+    <p>Время старта: {{ marathon.date_and_time|truncatewords:30|linebreaks }}</p>
+{% endblock %}

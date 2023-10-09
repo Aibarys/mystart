@@ -4,11 +4,11 @@ from django.core.validators import RegexValidator
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    balance = models.DecimalField(max_digits=10, decimal_places=2)
+    balance = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     first_name = models.CharField(max_length=30, validators=[
         RegexValidator(
             regex='^[a-zA-Z ]+$',  # Разрешаем только латинские буквы и пробелы
-            message='Имя может содержать только латинские буквы и пробелы.',
+            message='Имя может содержать только латинские буквы.',
         ),
     ])
 
@@ -16,7 +16,7 @@ class UserProfile(models.Model):
     last_name = models.CharField(max_length=30, validators=[
         RegexValidator(
             regex='^[a-zA-Z ]+$',  # Разрешаем только латинские буквы и пробелы
-            message='Фамилия может содержать только латинские буквы и пробелы.',
+            message='Фамилия может содержать только латинские буквы.',
         ),
     ])
 
@@ -25,9 +25,9 @@ class UserProfile(models.Model):
 
     # Пол (выборка из мужской/женский/другой)
     GENDER_CHOICES = [
-        ('male', 'Мужской'),
-        ('female', 'Женский'),
-        ('other', 'Другой'),
+        ('Мужской', 'Мужской'),
+        ('Женский', 'Женский'),
+        ('Другой', 'Другой'),
     ]
     gender = models.CharField(max_length=10, choices=GENDER_CHOICES)
 

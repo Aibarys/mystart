@@ -1,0 +1,329 @@
+body {
+    font-family: "Inter", sans-serif;
+  }
+  
+  .navigation {
+    height: 70px;
+    background-color: fff;
+    -webkit-box-shadow: 1px 1px 1px #dddddd;
+            box-shadow: 1px 1px 1px #dddddd;
+    font-family: "Inter", sans-serif;
+  }
+  .navigation .logo {
+    font-weight: 600;
+    font-size: 30px;
+  }
+  .navigation .menu ul li {
+    list-style-type: none;
+    font-size: 18px;
+    font-weight: 500;
+    margin-left: 30px !important;
+  }
+  .navigation a {
+    text-decoration: none;
+    color: black;
+  }
+  .navigation a:hover {
+    color: #CF0000;
+  }
+  .navigation .btn-primary {
+    background-color: #CF0000;
+    border-color: #CF0000;
+    text-align: right;
+  }
+  .navigation .btn-primary:hover {
+    background-color: #e60b0b;
+    border-color: #e90303;
+  }
+  .navigation .log-in {
+    text-align: center;
+  }
+  .navigation .log-in input {
+    width: 60%;
+    margin: 10px 0;
+    padding: 10px 10px;
+    border-radius: 5px;
+    border: 1px solid #CF0000;
+    outline: none;
+  }
+  .navigation .log-in .btn-primary {
+    width: 100%;
+  }
+  .navigation .log-in .container-modal {
+    width: 70%;
+    text-align: center;
+    margin: 0 auto;
+    padding-bottom: 20px;
+  }
+  .navigation .log-in .container-modal .footer-modal {
+    width: 100%;
+    text-align: center;
+  }
+  
+  .content {
+    padding: 20px 0 80px 0;
+    background-color: #f2f2f2;
+    font-family: "Inter", sans-serif;
+  }
+  .content h1 {
+    font-size: 26px;
+    font-weight: 600;
+  }
+  .content .date-events {
+    background-color: #fff;
+    border-radius: 5px;
+    height: 50px;
+    -webkit-box-shadow: 1px 1px 1px #dddddd;
+            box-shadow: 1px 1px 1px #dddddd;
+  }
+  .content .date-events ul li {
+    margin-left: 20px;
+    list-style-type: none;
+  }
+  .content .date-events a {
+    text-decoration: none;
+    color: black;
+  }
+  .content .date-events a:hover {
+    color: #CF0000;
+  }
+  .content .date-events .active {
+    color: #CF0000;
+  }
+  
+  .sidebar {
+    background-color: #fff;
+    -webkit-box-shadow: 1px 1px 1px #dddddd;
+            box-shadow: 1px 1px 1px #dddddd;
+    height: 50px;
+    padding: 0 20px 0 20px;
+    border-radius: 5px;
+    font-family: "Inter", sans-serif;
+  }
+  .sidebar .search {
+    width: 100%;
+  }
+  .sidebar .search input {
+    border: 0;
+    border-bottom: 1px solid #7c7c7c;
+    padding: 5px 0px;
+    width: 100%;
+    outline: none;
+  }
+  .sidebar .search svg {
+    margin: 10px 0 10px 0;
+    color: #CF0000;
+  }
+  
+  .block-2 {
+    font-family: "Inter", sans-serif;
+  }
+  .block-2 .marathons {
+    margin: 25px 0 0 0;
+  }
+  .block-2 .marathon-block {
+    background-color: #fff;
+    -webkit-box-shadow: 5px 5px 5px #dddddd;
+            box-shadow: 5px 5px 5px #dddddd;
+    border-radius: 5px;
+    padding: 0 0 20px 0;
+    margin-bottom: 25px;
+  }
+  .block-2 .marathon-block img {
+    width: 100%;
+    height: 250px;
+    border-radius: 5px 5px 0 0;
+  }
+  .block-2 .marathon-block h2 {
+    font-size: 17px;
+    font-weight: 700;
+    padding: 15px 15px 10px 15px;
+  }
+  .block-2 .marathon-block .date-marathon {
+    padding: 0 15px 15px 15px;
+    text-align: left;
+    color: #CF0000;
+    font-weight: 500;
+  }
+  .block-2 .marathon-block .marathon-amount {
+    padding: 0 15px 15px 15px;
+    text-align: right;
+    font-weight: 500;
+  }
+  .block-2 .marathon-block .distance ul li {
+    padding: 5px 10px;
+    font-weight: 400;
+    border-radius: 4px;
+    color: #000000;
+  }
+  .block-2 .marathon-block .distance a {
+    text-decoration: none;
+    color: #000;
+  }
+  .block-2 .marathon-block .distance svg {
+    margin-top: 3px;
+  }
+  .block-2 .marathon-block .participate {
+    text-align: center;
+    margin: 20px 0 0 0;
+  }
+  .block-2 .marathon-block .participate .btn-primary {
+    background-color: #CF0000;
+    border: 1px solid #CF0000;
+    width: 60%;
+    outline: none;
+  }
+  .block-2 .marathon-block .participate .btn-primary:hover {
+    background-color: #e21414;
+  }
+  .block-2 .filter {
+    background-color: #fff;
+    margin: 25px 0 0;
+    padding: 25px 15px 25px 15px;
+    border-radius: 5px;
+  }
+  .block-2 .filter .filter-date {
+    margin-bottom: 20px;
+  }
+  .block-2 .filter .filter-date h3 {
+    font-size: 16px;
+  }
+  .block-2 .filter .filter-date input {
+    width: 100%;
+    border: 1px solid #000;
+    padding: 5px 10px;
+    border-radius: 4px;
+    outline: none;
+  }
+  .block-2 .filter .filter-city {
+    margin-bottom: 20px;
+  }
+  .block-2 .filter .filter-city h3 {
+    font-size: 16px;
+  }
+  .block-2 .filter .filter-city select {
+    width: 100%;
+    border: 1px solid #000;
+    padding: 5px 10px;
+    border-radius: 4px;
+    outline: none;
+  }
+  .block-2 .filter .filter-age {
+    margin-bottom: 20px;
+  }
+  .block-2 .filter .filter-age h3 {
+    font-size: 16px;
+  }
+  .block-2 .filter .filter-age input {
+    width: 100%;
+    border: 1px solid #000;
+    padding: 5px 10px;
+    border-radius: 4px;
+    outline: none;
+  }
+  .block-2 .filter .filter-distance {
+    margin-bottom: 40px;
+  }
+  .block-2 .filter .filter-distance h3 {
+    font-size: 16px;
+  }
+  .block-2 .filter .filter-distance select {
+    width: 100%;
+    border: 1px solid #000;
+    padding: 5px 10px;
+    border-radius: 4px;
+    outline: none;
+  }
+  .block-2 .filter .filter-reset .btn-primary {
+    text-align: center;
+    color: #000;
+    background-color: #fff;
+    border: 1px solid #000;
+    width: 100%;
+  }
+  .block-2 .filter .filter-search .btn-primary {
+    text-align: center;
+    color: #fff;
+    background-color: #CF0000;
+    border: 1px solid #CF0000;
+    width: 100%;
+  }
+  
+  .pagination-menu .page-link {
+    font-family: "Inter", sans-serif;
+    background-color: #ffffff !important;
+    margin-right: 20px;
+    padding: 10px 20px;
+    border: 0;
+    color: #000;
+    font-weight: 500;
+    border-radius: 4px;
+  }
+  .pagination-menu .page-link:hover {
+    color: #fff !important;
+    background-color: #CF0000 !important;
+  }
+  .pagination-menu .ul li {
+    background-color: #fff !important;
+  }
+  
+  footer {
+    background-color: #3B3B3B;
+    font-family: "Inter", sans-serif;
+    padding: 30px 0 10px 0;
+  }
+  footer .logo {
+    font-size: 30px;
+    font-weight: 600;
+    color: #fff;
+  }
+  footer h3 {
+    font-size: 18px;
+    color: #fff;
+    font-weight: 600;
+    margin: 10px 0 15px 0;
+  }
+  footer ul a {
+    color: #a9a9a9;
+    text-decoration: none;
+    list-style-type: none;
+  }
+  footer ul a:hover {
+    color: #fff;
+  }
+  footer ul li {
+    margin-bottom: 5px;
+  }
+  footer hr {
+    color: #eeeeee;
+  }
+  footer .political-social {
+    padding-top: 4px;
+  }
+  footer .political-social .political ul li {
+    margin-right: 25px;
+    color: #ffffff;
+  }
+  footer .political-social .social ul li {
+    margin-left: 35px;
+  }
+  footer .copyright-web {
+    padding: 10px 0 0 0;
+  }
+  footer .copyright-web .copyright {
+    color: #a9a9a9;
+  }
+  footer .copyright-web .web {
+    text-align: right;
+    color: #a9a9a9;
+  }
+  footer .copyright-web .web a {
+    color: #fff;
+    text-decoration: none;
+  }
+  
+  @media only screen and (max-width: 600px) {
+    .logo {
+      font-size: 24px;
+    }
+  }

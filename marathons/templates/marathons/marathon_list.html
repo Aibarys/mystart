@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}Mystart.kz{% endblock %}
+{% block content %}
+        {% for marathon in marathons %}
+            <div class="col-4">
+                <div class="marathon-block">
+                    <img src="{{ marathon.poster.url }}" alt="Афиша события">
+                    <h2>
+                        <a href="{{ marathon.get_absolute_url }}">
+                        {{ marathon.title }}
+                        </a>
+                    </h2>
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="date-marathon">
+                                <p>{{ marathon.date_and_time}}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="distance">
+                        <ul class="nav justify-content-center">
+                            {% for elem in marathonDistance %}
+                                <a href="#"><li>{{ elem.distance }}</li></a>
+                            {% endfor %}
+                            <hr>
+                            {% for el in marathonDistance %}
+                                <a href="#"><li>{{ el.price }}тг</li></a>
+                            {% endfor %}      
+                        </ul>
+                    </div>
+                    <div class="participate">
+                        <button class="btn btn-primary">
+                            Участвовать
+                        </button>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    {% include "pagination.html" with page=marathons %}
+{% endblock %}

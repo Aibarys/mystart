@@ -3,11 +3,16 @@ from django.contrib.auth.decorators import login_required
 from .models import Marathon, Participant, MarathonDistance
 from .forms import MarathonDistanceForm, MarathonForm, Marathon
 from django.http import JsonResponse
+from django.core.paginator import Paginator
 
 
 def marathon_list(request):
-    marathons = Marathon.objects.all()
-    return render(request, 'marathons/marathon_list.html', {'marathons': marathons})
+    marathon_list = Marathon.objects.all()
+    marathonDistance = MarathonDistance.objects.all()
+    paginator = Paginator(marathon_list, 6) 
+    page_number = request.GET.get('page', 1)
+    marathons = paginator.page(page_number)
+    return render(request, 'marathons/marathon_list.html', {'marathons': marathons, 'marathonDistance': marathonDistance})
 
 def create_distance(request):
     if request.method == 'POST':
@@ -47,7 +52,9 @@ def create_marathon(request):
     if request.method == 'POST':
         form = MarathonForm(request.POST, request.FILES)
         if form.is_valid():
-            marathon = form.save()
+            marathon = form.save(commit=False)
+            marathon.author = request.user
+            marathon.save()
             # Дополнительные действия, если необходимо
             return redirect('marathon_detail', marathon_id=marathon.id)
     else:
@@ -74,7 +81,8 @@ def register_for_marathon(request, marathon_id):
     return render(request, 'marathons/marathon_detail.html', {'marathon': marathon})
 
 @login_required
-def marathon_detail(request, marathon_id):
-    marathon = get_object_or_404(Marathon, pk=marathon_id)
-    return render(request, 'marathons/marathon_detail.html', {'marathon': marathon})
+def marathon_detail(request, marathon):
+    marathonDistance = MarathonDistance.objects.all()
+    marathon = get_object_or_404(Marathon, status=Marathon.Status.PUBLISHED, slug=marathon)
+    return render(request, 'marathons/marathon_detail.html', {'marathon': marathon, 'marathonDistance': marathonDistance})
 
