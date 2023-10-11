@@ -1,9 +1,10 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from .models import Marathon, Participant, MarathonDistance
-from .forms import MarathonDistanceForm, MarathonForm, Marathon
+from .forms import MarathonDistanceForm, MarathonForm, Marathon, SearchForm
 from django.http import JsonResponse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.contrib.postgres.search import SearchVector
 
 
 def marathon_list(request):
@@ -88,9 +89,20 @@ def register_for_marathon(request, marathon_id):
 
     return render(request, 'marathons/marathon_detail.html', {'marathon': marathon})
 
-@login_required
 def marathon_detail(request, marathon):
     marathonDistance = MarathonDistance.objects.all()
     marathon = get_object_or_404(Marathon, status=Marathon.Status.PUBLISHED, slug=marathon)
     return render(request, 'marathons/marathon_detail.html', {'marathon': marathon, 'marathonDistance': marathonDistance})
+
+def marathon_search(request): 
+    form = SearchForm() 
+    query = None
+    results = []
+    
+    if 'query' in request.GET:
+        form = SearchForm(request.GET) 
+        if form.is_valid():
+            query = form.cleaned_data['query'] 
+            results = Marathon.published.annotate( search=SearchVector('title', 'description'), ).filter(search=query)
+    return render(request, 'marathons/search.html', {'form': form, 'query': query, 'results': results})
 

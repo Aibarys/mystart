@@ -14,10 +14,6 @@ class RunningEventAdmin(admin.ModelAdmin):
     
     get_distances.short_description = 'Дистанции'
     
-    def get_prices(self, obj):
-        return ", ".join([price.name for price in obj.prices.all()])
-    
-    get_prices.short_description = 'Цена'
 
     
     

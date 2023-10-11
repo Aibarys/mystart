@@ -17,3 +17,7 @@ class MarathonForm(forms.ModelForm):
     class Meta:
         model = Marathon
         fields = ['title', 'description', 'poster', 'start_location', 'date_and_time', 'max_participants', 'file_attachment']
+
+
+class SearchForm(forms.Form):
+    query = forms.CharField()
