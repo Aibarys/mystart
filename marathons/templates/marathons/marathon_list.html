@@ -26,13 +26,11 @@
                 </div>
                 <div class="distance">
                     <ul class="nav justify-content-center">
-                        {% for elem in marathonDistance %}
-                            <a href="#"><li>{{ elem.distance }}</li></a>
-                        {% endfor %}
-                        <hr>
-                        {% for el in marathonDistance %}
-                            <a href="#"><li>{{ el.price }}тг</li></a>
-                        {% endfor %}      
+                        {% for marathon_distance in marathonDistance %}
+                                {% if marathon_distance.marathon == marathon %}
+                                    <li>{{ marathon_distance.distance.name }} - {{ marathon_distance.price }} тнг.</li>
+                                {% endif %}
+                        {% endfor %}     
                     </ul>
                 </div>
                 <div class="participate">
@@ -43,7 +41,7 @@
             </div>
         </div> 
         {% empty %}
-            <p>There are no results for your query.</p>
+            <p>Результатов по запросу не найдено.</p>
         {% endfor %}
         <p><a href="{% url "marathons:marathon_list" %}">Сбросить</a></p>
     {% else %}  
@@ -65,13 +63,11 @@
                     </div>
                     <div class="distance">
                         <ul class="nav justify-content-center">
-                            {% for elem in marathonDistance %}
-                                <a href="#"><li>{{ elem.distance }}</li></a>
+                            {% for marathon_distance in marathonDistance %}
+                                {% if marathon_distance.marathon == marathon %}
+                                    <li>{{ marathon_distance.distance.name }} - {{ marathon_distance.price }} тнг.</li>
+                                {% endif %}
                             {% endfor %}
-                            <hr>
-                            {% for el in marathonDistance %}
-                                <a href="#"><li>{{ el.price }}тг</li></a>
-                            {% endfor %}      
                         </ul>
                     </div>
                     <div class="participate">

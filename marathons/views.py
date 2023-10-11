@@ -1,10 +1,11 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from .models import Marathon, Participant, MarathonDistance
-from .forms import MarathonDistanceForm, MarathonForm, Marathon, SearchForm
+from .models import Marathon, Participant, MarathonDistance, Distance
+from .forms import MarathonDistanceForm, MarathonForm, Marathon, SearchForm, DistancePriceForm
 from django.http import JsonResponse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib.postgres.search import SearchVector
+from django.forms import formset_factory
 
 
 def marathon_list(request):
@@ -73,15 +74,23 @@ def delete_distance(request, distance_id):
 def create_marathon(request):
     if request.method == 'POST':
         form = MarathonForm(request.POST, request.FILES)
-        if form.is_valid():
+        distances_and_prices = formset_factory(DistancePriceForm)(request.POST)
+        if form.is_valid() and distances_and_prices.is_valid():
             marathon = form.save(commit=False)
             marathon.author = request.user
             marathon.save()
+            
+            for distance_price_form in distances_and_prices:
+                distance = distance_price_form.cleaned_data['distance']
+                price = distance_price_form.cleaned_data['price']
+                marathon_distance = MarathonDistance(marathon=marathon, distance=distance, price=price)
+                marathon_distance.save()
             # Дополнительные действия, если необходимо
             return redirect('marathons:marathon_list')
     else:
         form = MarathonForm()
-    return render(request, 'marathons/create_marathon.html', {'form': form})
+        distances_and_prices = formset_factory(DistancePriceForm, extra=1)
+    return render(request, 'marathons/create_marathon.html', {'form': form, 'distances_and_prices': distances_and_prices})
 
 @login_required
 def register_for_marathon(request, marathon_id):

@@ -12,60 +12,56 @@
 {% block title %}Создать марафон{% endblock %}
 {% block content %}
   <h2>Создать новый марафон</h2>
-    <form method="post" enctype="multipart/form-data">
+    <form method="post" enctype="multipart/form-data" class="marathon-form">
         {% csrf_token %}
         <table>
-            <tr>
-                <th><label for="{{ form.title.id_for_label }}">Название:</label></th>
-                <td>{{ form.title }}</td>
-            </tr>
-            <tr>
-                <th><label for="{{ form.description.id_for_label }}">Описание:</label></th>
-                <td>{{ form.description }}</td>
-            </tr>
-            <tr>
-                <th>{{ form.distances.label_tag }}</th>
-                <td>
-                    {% for checkbox in form.distances %}
-                        <label for="{{ checkbox.id_for_label }}">
-                            {{ checkbox }}
-                        </label><br>
-                    {% endfor %}
-                </td>
-            </tr>
-            <tr>
-                <th>{{ form.prices.label_tag }}</th>
-                <td>
-                    {% for checkbox in form.prices %}
-                        <label for="{{ checkbox.id_for_label }}">
-                            {{ checkbox }}
-                        </label><br>
-                    {% endfor %}
-                </td>
-            </tr>
-            <tr>
-                <th><label for="{{ form.start_location.id_for_label }}">Место старта:</label></th>
-                <td>{{ form.start_location }}</td>
-            </tr>
-            <tr>
-                <th><label for="{{ form.date_and_time.id_for_label }}">Дата и время старта:</label></th>
-                <td><input type="datetime-local" id="{{ form.date_and_time.id_for_label }}" name="{{ form.date_and_time.name }}" value="{{ form.date_and_time.value|default:'' }}"></td>
-            </tr>
-            <tr>
-                <th><label for="{{ form.max_participants.id_for_label }}">Количество слотов:</label></th>
-                <td>{{ form.max_participants }}</td>
-            </tr>
-            <tr>
-                <th><label for="{{ form.file_attachment.id_for_label }}">Файл:</label></th>
-                <td>{{ form.file_attachment }}</td>
-            </tr>
-            <tr>
-                <th><label for="{{ form.poster.id_for_label }}">Постер:</label></th>
-                <td>{{ form.poster }}</td>
-            </tr>
+        <tr>
+            <th><label for="{{ form.title.id_for_label }}" class="form-label">Название:</label></th>
+            <td>{{ form.title }}</td>
+        </tr>
+        <tr>
+            <th><label for="{{ form.description.id_for_label }}" class="form-label">Описание:</label></th>
+            <td>{{ form.description }}</td>
+        </tr>
+        <tr>
+            <th><label class="form-label">Дистанция и цена:</label></th>
+                {{ distances_and_prices.management_form }}
+            <td>
+                <table id="distances-and-prices-table">
+                  {% for distance_price_form in distances_and_prices %}
+                    <tr>
+                      <td>{{ distance_price_form.distance }}</td>
+                      <td>{{ distance_price_form.price }}</td>
+                    </tr>
+                  {% endfor %}
+                </table>
+                <button type="button" id="add-distance-price">Добавить дистанцию и цену</button>
+            </td>
+        </tr>
+        <tr>
+            <th><label for="{{ form.start_location.id_for_label }}" class="form-label">Место старта:</label></th>
+            <td>{{ form.start_location }}</td>
+        </tr>
+        <tr>
+            <th><label for="{{ form.date_and_time.id_for_label }}" class="form-label">Дата и время старта:</label></th>
+            <td><input type="datetime-local" id="{{ form.date_and_time.id_for_label }}" name="{{ form.date_and_time.name }}" value="{{ form.date_and_time.value|default:'' }}" class="date-input"></td>
+        </tr>
+        <tr>
+            <th><label for="{{ form.max_participants.id_for_label }}" class="form-label">Количество слотов:</label></th>
+            <td>{{ form.max_participants }}</td>
+        </tr>
+        <tr>
+            <th><label for="{{ form.file_attachment.id_for_label }}" class="form-label">Файл:</label></th>
+            <td>{{ form.file_attachment }}</td>
+        </tr>
+        <tr>
+            <th><label for="{{ form.poster.id_for_label }}" class="form-label">Постер:</label></th>
+            <td>{{ form.poster }}</td>
+        </tr>
         </table>
         <button type="submit" class="btn btn-primary">Создать</button>
     </form>
+  
 
     {% if form.errors %}
         <ul class="errorlist">
@@ -80,4 +76,43 @@
             jQuery('.datepicker').datepicker();
         });
     </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+          document.getElementById('add-distance-price').addEventListener('click', function() {
+            var table = document.getElementById('distances-and-prices-table');
+            var newRow = table.insertRow(table.rows.length - 1);  // Вставляем перед последней строкой (перед кнопкой)
+            
+            var distanceCell = newRow.insertCell(0);
+            var priceCell = newRow.insertCell(1);
+            
+            // Создание элемента выбора дистанции
+            var distanceSelect = document.createElement('select');
+            distanceSelect.name = 'distances';
+            distanceSelect.className = 'distance-select';
+            
+            // Клонируем опции из первого выбора дистанции, чтобы использовать доступные дистанции
+            var availableDistances = document.querySelector('.distance-select').options;
+            for (var i = 0; i < availableDistances.length; i++) {
+              var option = document.createElement('option');
+              option.value = availableDistances[i].value;
+              option.text = availableDistances[i].text;
+              distanceSelect.appendChild(option);
+            }
+            
+            // Создание поля ввода цены
+            var priceInput = document.createElement('input');
+            priceInput.type = 'text';
+            priceInput.name = 'prices';
+            priceInput.className = 'price-input';
+            priceInput.placeholder = 'Укажите цену';
+            
+            // Добавление элементов в ячейки
+            distanceCell.appendChild(distanceSelect);
+            priceCell.appendChild(priceInput);
+          });
+        });
+        </script>
+        
+        
 {% endblock %}
