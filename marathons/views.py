@@ -12,6 +12,15 @@ def marathon_list(request):
     marathonDistance = MarathonDistance.objects.all()
     paginator = Paginator(marathon_list, 6) 
     page_number = request.GET.get('page', 1)
+    form = SearchForm() 
+    query = None
+    results = []
+    
+    if 'query' in request.GET:
+        form = SearchForm(request.GET) 
+        if form.is_valid():
+            query = form.cleaned_data['query'] 
+            results = Marathon.published.annotate( search=SearchVector('title', 'description'), ).filter(search=query)
     
     try:
         marathons = paginator.page(page_number)
@@ -21,7 +30,11 @@ def marathon_list(request):
     except EmptyPage:
         # If page_number is out of range deliver last page of results
         marathons = paginator.page(paginator.num_pages)
-    return render(request, 'marathons/marathon_list.html', {'marathons': marathons, 'marathonDistance': marathonDistance})
+    return render(request, 'marathons/marathon_list.html', {'marathons': marathons, 
+                                                            'marathonDistance': marathonDistance, 
+                                                            'form': form, 
+                                                            'query': query, 
+                                                            'results': results})
 
 def create_distance(request):
     if request.method == 'POST':
@@ -93,16 +106,3 @@ def marathon_detail(request, marathon):
     marathonDistance = MarathonDistance.objects.all()
     marathon = get_object_or_404(Marathon, status=Marathon.Status.PUBLISHED, slug=marathon)
     return render(request, 'marathons/marathon_detail.html', {'marathon': marathon, 'marathonDistance': marathonDistance})
-
-def marathon_search(request): 
-    form = SearchForm() 
-    query = None
-    results = []
-    
-    if 'query' in request.GET:
-        form = SearchForm(request.GET) 
-        if form.is_valid():
-            query = form.cleaned_data['query'] 
-            results = Marathon.published.annotate( search=SearchVector('title', 'description'), ).filter(search=query)
-    return render(request, 'marathons/search.html', {'form': form, 'query': query, 'results': results})
-
