@@ -25,19 +25,18 @@
         </tr>
         <tr>
             <th><label class="form-label">Дистанция и цена:</label></th>
-                {{ distances_and_prices.management_form }}
-            <td>
-                <table id="distances-and-prices-table">
-                  {% for distance_price_form in distances_and_prices %}
-                    <tr>
-                      <td>{{ distance_price_form.distance }}</td>
-                      <td>{{ distance_price_form.price }}</td>
-                    </tr>
-                  {% endfor %}
-                </table>
-                <button type="button" id="add-distance-price">Добавить дистанцию и цену</button>
-            </td>
-        </tr>
+                <td>
+                    <table id="distances-and-prices-table" >
+                        {% for distance_price_form in distances_and_prices %}
+                            <tr>
+                                <td>{{ distance_price_form.distance }}</td>
+                                <td>{{ distance_price_form.price }}</td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                    <button type="button" id="add-distance-price">Добавить дистанцию и цену</button>
+                </td>
+        </tr>    
         <tr>
             <th><label for="{{ form.start_location.id_for_label }}" class="form-label">Место старта:</label></th>
             <td>{{ form.start_location }}</td>
@@ -79,40 +78,39 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-          document.getElementById('add-distance-price').addEventListener('click', function() {
-            var table = document.getElementById('distances-and-prices-table');
-            var newRow = table.insertRow(table.rows.length - 1);  // Вставляем перед последней строкой (перед кнопкой)
-            
-            var distanceCell = newRow.insertCell(0);
-            var priceCell = newRow.insertCell(1);
-            
-            // Создание элемента выбора дистанции
-            var distanceSelect = document.createElement('select');
-            distanceSelect.name = 'distances';
-            distanceSelect.className = 'distance-select';
-            
-            // Клонируем опции из первого выбора дистанции, чтобы использовать доступные дистанции
-            var availableDistances = document.querySelector('.distance-select').options;
-            for (var i = 0; i < availableDistances.length; i++) {
-              var option = document.createElement('option');
-              option.value = availableDistances[i].value;
-              option.text = availableDistances[i].text;
-              distanceSelect.appendChild(option);
-            }
-            
-            // Создание поля ввода цены
-            var priceInput = document.createElement('input');
-            priceInput.type = 'text';
-            priceInput.name = 'prices';
-            priceInput.className = 'price-input';
-            priceInput.placeholder = 'Укажите цену';
-            
-            // Добавление элементов в ячейки
-            distanceCell.appendChild(distanceSelect);
-            priceCell.appendChild(priceInput);
-          });
-        });
-        </script>
+            document.getElementById('add-distance-price').addEventListener('click', function() {
+              var table = document.getElementById('distances-and-prices-table');
+              var newRow = table.insertRow(table.rows.length - 1);  // Insert before the last row (before the button)
+          
+              var distanceCell = newRow.insertCell(0);
+              var priceCell = newRow.insertCell(1);
+          
+              // Create a new select element for distance
+              var distanceSelect = document.createElement('select');
+              distanceSelect.name = 'distances';
+              distanceSelect.className = 'distance-select';
+          
+              // Clone the options from the first select element to populate available distances
+              var firstDistanceSelect = document.querySelector('.distance-select');
+              var availableDistances = firstDistanceSelect.cloneNode(true); // Clone the entire select element
+              availableDistances.id = 'id_' + 'form-' + table.rows.length + '-distance'; // Create a unique ID
+              distanceSelect.appendChild(availableDistances);
+          
+              // Create a new input element for price
+              var priceInput = document.createElement('input');
+              priceInput.type = 'text';
+              priceInput.name = 'prices';
+              priceInput.className = 'price-input';
+              priceInput.placeholder = 'Enter the price';
+              priceInput.id = 'id_' + 'form-' + table.rows.length + '-price'; // Create a unique ID
+          
+              // Add elements to the cells
+              distanceCell.appendChild(distanceSelect);
+              priceCell.appendChild(priceInput);
+            });
+          });          
+    </script>
+        
         
         
 {% endblock %}

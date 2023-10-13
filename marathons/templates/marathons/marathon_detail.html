@@ -8,13 +8,12 @@
     <img src="{{ marathon.poster.url }}" alt="Афиша события">
     <p>Доступные дистанции:</p>
         <ul class="nav justify-content-center">
-            {% for elem in marathonDistance %}
-                <a href="#"><li>{{ elem.distance }}</li></a>
-            {% endfor %}
-            <hr>
-            {% for elem in marathonDistance %}
-                <a href="#"><li>{{ elem.price }}тг</li></a>
-            {% endfor %}      
+            {% for marathon_distance in marathonDistance %}
+                {% if marathon_distance.marathon == marathon %}
+                    <li>{{ marathon_distance.distance.name }} - {{ marathon_distance.price }} тнг.</li>
+                    <hr>
+                {% endif %}
+            {% endfor %}    
         </ul>
     <p>Место старта: {{ marathon.start_location|truncatewords:30|linebreaks }}</p> 
     <p>Время старта: {{ marathon.date_and_time|truncatewords:30|linebreaks }}</p>
