@@ -39,6 +39,8 @@ class Marathon(models.Model):
     slug = models.SlugField(max_length=250, unique_for_date='publish', blank=True)
     objects = models.Manager() # менеджер, применяемый по умолчанию
     published = PublishedManager() # конкретно-прикладной менеджер
+    participants = models.ManyToManyField(UserProfile, through='Participation', related_name='marathons_participated')
+
     
     def save(self, *args, **kwargs):
         if not self.slug:  # Генерировать слаг только если его нет
@@ -61,8 +63,6 @@ class Marathon(models.Model):
         return reverse('marathons:marathon_detail', args=[self.slug])
     
 
-
-
 class MarathonDistance(models.Model):
     marathon = models.ForeignKey(Marathon, on_delete=models.CASCADE)
     distance = models.ForeignKey(Distance, on_delete=models.CASCADE)
@@ -71,9 +71,11 @@ class MarathonDistance(models.Model):
     def __str__(self):
         return f"{self.marathon.title} - {self.distance.name} ({self.price} тнг.)"
 
-class Participant(models.Model):
+class Participation(models.Model):
     user_profile = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
     marathon = models.ForeignKey(Marathon, on_delete=models.CASCADE)
+    joined_at = models.DateTimeField(default=timezone.now)  # Дата и время, когда пользователь присоединился к марафону
 
     def __str__(self):
         return f"{self.user_profile.user.username} - {self.marathon.title}"
+

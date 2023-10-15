@@ -327,3 +327,11 @@ body {
       font-size: 24px;
     }
   }
+
+.remove-row {
+    background-color: red;
+    color: white;
+    padding: 2px 5px;
+    cursor: pointer;
+    border: none;
+}

@@ -1,116 +1,66 @@
 {% extends "base.html" %}
-{% load static %}
-
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-<!-- Подключение jQuery UI и активация Datepicker -->
-<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 
-<!-- Подключение виджета календаря -->
-{{ form.media }}
-{% block title %}Создать марафон{% endblock %}
+{% block title %}Создать новый марафон{% endblock %}
+
 {% block content %}
-  <h2>Создать новый марафон</h2>
-    <form method="post" enctype="multipart/form-data" class="marathon-form">
-        {% csrf_token %}
-        <table>
-        <tr>
-            <th><label for="{{ form.title.id_for_label }}" class="form-label">Название:</label></th>
-            <td>{{ form.title }}</td>
-        </tr>
-        <tr>
-            <th><label for="{{ form.description.id_for_label }}" class="form-label">Описание:</label></th>
-            <td>{{ form.description }}</td>
-        </tr>
-        <tr>
-            <th><label class="form-label">Дистанция и цена:</label></th>
-                <td>
-                    <table id="distances-and-prices-table" >
-                        {% for distance_price_form in distances_and_prices %}
-                            <tr>
-                                <td>{{ distance_price_form.distance }}</td>
-                                <td>{{ distance_price_form.price }}</td>
-                            </tr>
-                        {% endfor %}
-                    </table>
-                    <button type="button" id="add-distance-price">Добавить дистанцию и цену</button>
-                </td>
-        </tr>    
-        <tr>
-            <th><label for="{{ form.start_location.id_for_label }}" class="form-label">Место старта:</label></th>
-            <td>{{ form.start_location }}</td>
-        </tr>
-        <tr>
-            <th><label for="{{ form.date_and_time.id_for_label }}" class="form-label">Дата и время старта:</label></th>
-            <td><input type="datetime-local" id="{{ form.date_and_time.id_for_label }}" name="{{ form.date_and_time.name }}" value="{{ form.date_and_time.value|default:'' }}" class="date-input"></td>
-        </tr>
-        <tr>
-            <th><label for="{{ form.max_participants.id_for_label }}" class="form-label">Количество слотов:</label></th>
-            <td>{{ form.max_participants }}</td>
-        </tr>
-        <tr>
-            <th><label for="{{ form.file_attachment.id_for_label }}" class="form-label">Файл:</label></th>
-            <td>{{ form.file_attachment }}</td>
-        </tr>
-        <tr>
-            <th><label for="{{ form.poster.id_for_label }}" class="form-label">Постер:</label></th>
-            <td>{{ form.poster }}</td>
-        </tr>
-        </table>
-        <button type="submit" class="btn btn-primary">Создать</button>
-    </form>
-  
+    <div class="container mt-5">
+        <h2>Создать новый марафон</h2>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
 
-    {% if form.errors %}
-        <ul class="errorlist">
-            {% for field, errors in form.errors.items %}
-                <li>{{ field }}: {{ errors.0 }}</li>
-            {% endfor %}
-        </ul>
-    {% endif %}
+            {{ form.as_p }}
 
+            <h4>Дистанции и цены</h4>
+            {{ distances_and_prices.management_form }}
+            <div id="distance-price-formset">
+                {% for form in distances_and_prices %}
+                    <div class="distance-price-form">
+                        {{ form.distance.errors }}
+                        {{ form.distance.label_tag }} {{ form.distance }}
+                        
+                        {{ form.price.errors }}
+                        {{ form.price.label_tag }} {{ form.price }}
+                    </div>
+                {% endfor %}
+                
+            </div>
+            <button type="button" id="add-distance-price" class="btn btn-secondary mt-3">Добавить дистанцию и цену</button>
+
+            <button type="submit" class="btn btn-primary">Сохранить</button>
+        </form>
+    </div>
     <script>
-        jQuery(document).ready(function () {
-            jQuery('.datepicker').datepicker();
+        $(document).ready(function() {
+            let formCount = {{ distances_and_prices.total_form_count }};
+            let maxForms = {{ distances_and_prices.max_num }};
+            let $formsetContainer = $("#distance-price-formset");
+    
+            $("#add-distance-price").click(function() {
+                if (formCount < maxForms) {
+                    let $newForm = $formsetContainer.children(".distance-price-form:first").clone(true);
+                    $newForm.find('input, select').each(function() {
+                        $(this).attr('name', $(this).attr('name').replace('0', formCount)); // заменяем 0 (индекс первой формы) на текущий formCount
+                        $(this).attr('id', $(this).attr('id').replace('0', formCount)); // заменяем 0 (индекс первой формы) на текущий formCount для id
+                    });
+                    
+                    $newForm.find('input, select').val('');  // сброс значений полей в новой форме
+
+                    let newFormHtml = $newForm.get(0).outerHTML.replace(/__prefix__/g, formCount);
+                    $formsetContainer.append(newFormHtml);
+            
+                    // Обновляем общее количество форм
+                    $("#id_form-TOTAL_FORMS").val(formCount + 1);
+                    formCount++;
+                } else {
+                    alert("Вы достигли максимального количества форм");
+                }
+            });
+            
         });
     </script>
+    
+    <!-- Ниже можно добавить скрипт для добавления новых форм дистанции и цены, если необходимо -->
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            document.getElementById('add-distance-price').addEventListener('click', function() {
-              var table = document.getElementById('distances-and-prices-table');
-              var newRow = table.insertRow(table.rows.length - 1);  // Insert before the last row (before the button)
-          
-              var distanceCell = newRow.insertCell(0);
-              var priceCell = newRow.insertCell(1);
-          
-              // Create a new select element for distance
-              var distanceSelect = document.createElement('select');
-              distanceSelect.name = 'distances';
-              distanceSelect.className = 'distance-select';
-          
-              // Clone the options from the first select element to populate available distances
-              var firstDistanceSelect = document.querySelector('.distance-select');
-              var availableDistances = firstDistanceSelect.cloneNode(true); // Clone the entire select element
-              availableDistances.id = 'id_' + 'form-' + table.rows.length + '-distance'; // Create a unique ID
-              distanceSelect.appendChild(availableDistances);
-          
-              // Create a new input element for price
-              var priceInput = document.createElement('input');
-              priceInput.type = 'text';
-              priceInput.name = 'prices';
-              priceInput.className = 'price-input';
-              priceInput.placeholder = 'Enter the price';
-              priceInput.id = 'id_' + 'form-' + table.rows.length + '-price'; // Create a unique ID
-          
-              // Add elements to the cells
-              distanceCell.appendChild(distanceSelect);
-              priceCell.appendChild(priceInput);
-            });
-          });          
-    </script>
-        
-        
-        
 {% endblock %}
