@@ -1,0 +1,7 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h1>Страница не найдена</h1>
+  <p>Извините, запрашиваемая вами страница не существует.</p>
+  <a href="{% url 'marathons:marathon_list' %}">Вернуться на главную</a>
+{% endblock %}

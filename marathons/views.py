@@ -92,3 +92,23 @@ def marathon_detail(request, marathon):
     marathonDistance = MarathonDistance.objects.all()
     marathon = get_object_or_404(Marathon, status=Marathon.Status.PUBLISHED, slug=marathon)
     return render(request, 'marathons/marathon_detail.html', {'marathon': marathon, 'marathonDistance': marathonDistance})
+
+
+def custom_404_view(request, exception):
+    return render(request, '404.html', status=404)
+
+@login_required
+def participate_in_marathon(request, marathon_slug, distance_id):
+    marathon = get_object_or_404(Marathon, slug=marathon_slug)
+    distance = get_object_or_404(MarathonDistance, id=distance_id)
+    
+    # Проверяем, не участвует ли пользователь уже в этом марафоне
+    if Participation.objects.filter(user_profile=request.user.profile, marathon=marathon).exists():
+        # Перенаправляем на другую страницу или показываем сообщение об ошибке
+        pass 
+    else:
+        Participation.objects.create(user_profile=request.user.profile, marathon=marathon)
+        # Перенаправляем на страницу оплаты или показываем сообщение о успешном участии
+        pass
+
+    return redirect('marathons:marathon_list')
