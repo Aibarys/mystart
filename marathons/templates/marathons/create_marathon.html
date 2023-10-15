@@ -31,6 +31,14 @@
             <button type="submit" class="btn btn-primary">Сохранить</button>
         </form>
     </div>
+
+    {% if form.errors %}
+        <ul class="errorlist">
+            {% for field, errors in form.errors.item %}
+                <li>{{ field }}: {{ errors.0 }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
     <script>
         $(document).ready(function() {
             let formCount = {{ distances_and_prices.total_form_count }};

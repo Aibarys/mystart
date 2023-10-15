@@ -43,9 +43,18 @@ class Marathon(models.Model):
 
     
     def save(self, *args, **kwargs):
-        if not self.slug:  # Генерировать слаг только если его нет
+        if not self.slug:
+            # начните с преобразования title в slug
             self.slug = slugify(self.title)
-        super().save(*args, **kwargs)
+            
+            # если slug уже существует, добавьте к нему номер
+            orig_slug = self.slug
+            counter = 1
+            while Marathon.objects.filter(slug=self.slug).exists():
+                self.slug = f"{orig_slug}-{counter}"
+                counter += 1
+        
+        super(Marathon, self).save(*args, **kwargs)
 
     class Meta:
         ordering = ['-publish']
