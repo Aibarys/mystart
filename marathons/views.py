@@ -1,12 +1,12 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from .models import Marathon, Participation, MarathonDistance, Distance
-from .forms import MarathonForm, Marathon, SearchForm, DistancePriceForm
+from .forms import MarathonForm, Marathon, SearchForm, DistancePriceForm, ParticipateForm
+from .filters import MarathonFilter
 from django.http import JsonResponse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib.postgres.search import SearchVector
 from django.forms import formset_factory
-
 
 def marathon_list(request):
     marathon_list = Marathon.published.all()
@@ -16,7 +16,9 @@ def marathon_list(request):
     form = SearchForm() 
     query = None
     results = []
-    
+    filter = MarathonFilter(request.GET, queryset=Marathon.published.all())
+    print(request.GET, filter.qs)
+
     if 'query' in request.GET:
         form = SearchForm(request.GET) 
         if form.is_valid():
@@ -35,7 +37,8 @@ def marathon_list(request):
                                                             'marathonDistance': marathonDistance, 
                                                             'form': form, 
                                                             'query': query, 
-                                                            'results': results})
+                                                            'results': results, 
+                                                            'filter': filter})
 
 @login_required
 def create_marathon(request):
@@ -90,8 +93,19 @@ def register_for_marathon(request, marathon_id):
 
 def marathon_detail(request, marathon):
     marathonDistance = MarathonDistance.objects.all()
+    distances = MarathonDistance.objects.filter(marathon=marathon)
     marathon = get_object_or_404(Marathon, status=Marathon.Status.PUBLISHED, slug=marathon)
-    return render(request, 'marathons/marathon_detail.html', {'marathon': marathon, 'marathonDistance': marathonDistance})
+    
+    form = ParticipateForm()
+    if request.method == "POST":
+        form = ParticipateForm(request.POST)
+        if form.is_valid():
+            # TODO: сохраните информацию о участии и перенаправьте на страницу подтверждения или оплаты
+            pass
+    return render(request, 'marathons/marathon_detail.html', {'marathon': marathon, 
+                                                              'marathonDistance': marathonDistance, 
+                                                              'distances': distances, 
+                                                              'form': form})
 
 
 def custom_404_view(request, exception):

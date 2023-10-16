@@ -1,7 +1,45 @@
 {% extends "base.html" %}
 {% block title %}Mystart.kz{% endblock %}
 {% block content %}
-    {% if query %}
+    {% if request.GET != '{}' %}
+    <h1>Марафоны</h1> 
+        {% for marathon in filter.qs %}
+        <div class="col-4">
+            <div class="marathon-block">
+                <img src="{{ marathon.poster.url }}" alt="Афиша события">
+                <h2>
+                    <a href="{{ marathon.get_absolute_url }}">
+                    {{ marathon.title }}
+                    </a>
+                </h2>
+                <div class="row">
+                    <div class="col-6">
+                        <div class="date-marathon">
+                            <p>{{ marathon.date_and_time}}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="distance">
+                    <ul class="nav justify-content-center">
+                        {% for marathon_distance in marathonDistance %}
+                                {% if marathon_distance.marathon == marathon %}
+                                    <li>{{ marathon_distance.distance.name }} - {{ marathon_distance.price }} тнг.</li>
+                                {% endif %}
+                        {% endfor %}     
+                    </ul>
+                </div>
+                <div class="participate">
+                    <button class="btn btn-primary" onclick="document.location='{{ marathon.get_absolute_url }}'">
+                        Участвовать
+                    </button>
+                </div>
+            </div>
+        </div> 
+        {% empty %}
+            <p>Результатов по запросу не найдено.</p>
+        {% endfor %}
+
+    {% elif query %}
         <h1>Марафоны включающие "{{ query }}"</h1> 
         <h3>
             {% with results.count as total_results %}
@@ -44,7 +82,8 @@
             <p>Результатов по запросу не найдено.</p>
         {% endfor %}
         <p><a href="{% url "marathons:marathon_list" %}">Сбросить</a></p>
-    {% else %}  
+    {% else %}
+        <h1>Марафоны</h1> 
         {% for marathon in marathons %}
             <div class="col-4">
                 <div class="marathon-block">

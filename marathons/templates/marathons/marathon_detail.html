@@ -17,4 +17,12 @@
         </ul>
     <p>Место старта: {{ marathon.start_location|truncatewords:30|linebreaks }}</p> 
     <p>Время старта: {{ marathon.date_and_time|truncatewords:30|linebreaks }}</p>
+
+
+    <form method="post" class="participate-form">
+        {% csrf_token %}
+        <label for="distance">Выберите дистанцию:</label>
+        {{ form.distance }}
+        <input type="submit" value="Участвовать">
+    </form>
 {% endblock %}

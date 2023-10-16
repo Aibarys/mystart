@@ -1,4 +1,5 @@
 {% load static %}
+{% load custom_filters %}
 <!DOCTYPE html>
 <html>
 <head>
@@ -170,37 +171,20 @@
                             <form method="get">
                                 <div class="filter-date">
                                     <h3>Дата проведения</h3>
-                                    <input type="date" name="date" value="{{ request.GET.date }}">
+                                    {{ filter.form.date_and_time|as_date_input }}
                                 </div>
                                 <div class="filter-city">
                                     <h3>Выберите город</h3>
-                                    <select name="city">
-                                        <option value="">Все города</option>
-                                        <option value="Астана" {% if request.GET.city == "Астана" %}selected{% endif %}>Астана</option>
-                                        <option value="Алматы" {% if request.GET.city == "Алматы" %}selected{% endif %}>Алматы</option>
-                                        <option value="Шымкент" {% if request.GET.city == "Шымкент" %}selected{% endif %}>Шымкент</option>
-                                        <option value="Актобе" {% if request.GET.city == "Актобе" %}selected{% endif %}>Актобе</option>
-                                        <option value="Актау" {% if request.GET.city == "Актау" %}selected{% endif %}>Актау</option>
-                                    </select>
-                                </div>
-                                <div class="filter-age">
-                                    <h3>Возраст</h3>
-                                    <input type="range" name="age" min="0" max="80" value="{{ request.GET.age }}">
+                                    {{ filter.form.start_location }}
                                 </div>
                                 <div class="filter-distance">
                                     <h3>Дистанция</h3>
-                                    <select name="distance">
-                                        <option value="">Все дистанции</option>
-                                        <option value="5 км" {% if request.GET.distance == "5 км" %}selected{% endif %}>5 км</option>
-                                        <option value="10 км" {% if request.GET.distance == "10 км" %}selected{% endif %}>10 км</option>
-                                        <option value="21 км" {% if request.GET.distance == "21 км" %}selected{% endif %}>21 км</option>
-                                        <option value="42 км" {% if request.GET.distance == "42 км" %}selected{% endif %}>42 км</option>
-                                    </select>
+                                    {{ filter.form.distances }}
                                 </div>
                                 <div class="row justify-content-between">
                                     <div class="col-6">
                                         <div class="filter-reset">
-                                            <button class="btn btn-primary" type="reset">Сбросить</button>
+                                            <a href="{% url 'marathons:marathon_list' %}" class="btn btn-primary" type="reset">Сбросить</a>
                                         </div>
                                     </div>
                                     <div class="col-6">
@@ -210,6 +194,15 @@
                                     </div>
                                 </div>
                             </form>
+                            <script>
+                                document.querySelector(".filter-reset button").addEventListener("click", function(e) {
+                                    e.preventDefault(); // Предотвратить стандартное поведение кнопки
+                                    let form = e.target.closest("form"); // Найти ближайшую форму
+                                    form.reset(); // Сбросить форму
+                                    form.submit(); // Отправить форму (если это необходимо)
+                                });
+                                
+                            </script>
                         </div>
                         {% endif %}
                     </div>

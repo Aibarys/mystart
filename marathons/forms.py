@@ -1,5 +1,5 @@
 from django import forms
-from .models import MarathonDistance, Marathon, Distance
+from .models import MarathonDistance, Marathon, Distance, Participation
 
 class DistancePriceForm(forms.Form):
     distance = forms.ModelChoiceField(queryset=Distance.objects.all(), widget=forms.Select(attrs={'class': 'select-box'}))
@@ -15,3 +15,9 @@ class MarathonForm(forms.ModelForm):
 
 class SearchForm(forms.Form):
     query = forms.CharField()
+    
+    
+class ParticipateForm(forms.ModelForm):
+    class Meta:
+        model = Participation
+        fields = '__all__'
